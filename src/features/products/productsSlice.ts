@@ -1,32 +1,40 @@
-import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import type { Product, ProductsState } from '../../types';
-import { API } from '../../services';
+import {
+  createSlice,
+  createAsyncThunk,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import type { Product, ProductsState } from "../../types";
+import API from "../../services";
 
 // Mock products data
 const mockProducts: Product[] = [
   {
-    id: '1',
-    title: 'Premium Wireless Headphones',
-    description: 'High-quality wireless headphones with noise cancellation and premium sound quality.',
+    id: "1",
+    title: "Premium Wireless Headphones",
+    description:
+      "High-quality wireless headphones with noise cancellation and premium sound quality.",
     price: 299.99,
-    image: 'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=500',
+    image:
+      "https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=500",
     category: {
-      name: 'Electronics',
-      id: 1
+      name: "Electronics",
+      id: 1,
     },
     stock: 15,
     rating: 4.8,
     reviews: 124,
   },
   {
-    id: '2',
-    title: 'Smart Fitness Watch',
-    description: 'Advanced fitness tracking with heart rate monitoring and GPS.',
+    id: "2",
+    title: "Smart Fitness Watch",
+    description:
+      "Advanced fitness tracking with heart rate monitoring and GPS.",
     price: 199.99,
-    image: 'https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&cs=tinysrgb&w=500',
+    image:
+      "https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&cs=tinysrgb&w=500",
     category: {
-      name: 'Electronics',
-      id: 1
+      name: "Electronics",
+      id: 1,
     },
     stock: 8,
     rating: 4.6,
@@ -87,22 +95,22 @@ const mockProducts: Product[] = [
 //   }
 // );
 export const fetchProducts = createAsyncThunk(
-  'products/fetchProducts',
+  "products/fetchProducts",
   async () => {
     // Simulate API call
-    const response = await API.get("/products")
+    const response = await API.get("/products");
     return response.data;
   }
 );
 
 export const fetchProductById = createAsyncThunk(
-  'products/fetchProductById',
+  "products/fetchProductById",
   async (id: string) => {
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const product = mockProducts.find(p => p.id === id);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const product = mockProducts.find((p) => p.id === id);
     if (!product) {
-      throw new Error('Product not found');
+      throw new Error("Product not found");
     }
     return product;
   }
@@ -111,13 +119,13 @@ export const fetchProductById = createAsyncThunk(
 const initialState: ProductsState = {
   items: [],
   isLoading: false,
-  searchTerm: '',
-  selectedCategory: '',
+  searchTerm: "",
+  selectedCategory: "",
   selectedProduct: null,
 };
 
 const productsSlice = createSlice({
-  name: 'products',
+  name: "products",
   initialState,
   reducers: {
     setSearchTerm: (state, action: PayloadAction<string>) => {
@@ -135,20 +143,26 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
-        state.isLoading = false;
-        state.items = action.payload;
-      })
+      .addCase(
+        fetchProducts.fulfilled,
+        (state, action: PayloadAction<Product[]>) => {
+          state.isLoading = false;
+          state.items = action.payload;
+        }
+      )
       .addCase(fetchProducts.rejected, (state) => {
         state.isLoading = false;
       })
       .addCase(fetchProductById.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchProductById.fulfilled, (state, action: PayloadAction<Product>) => {
-        state.isLoading = false;
-        state.selectedProduct = action.payload;
-      })
+      .addCase(
+        fetchProductById.fulfilled,
+        (state, action: PayloadAction<Product>) => {
+          state.isLoading = false;
+          state.selectedProduct = action.payload;
+        }
+      )
       .addCase(fetchProductById.rejected, (state) => {
         state.isLoading = false;
         state.selectedProduct = null;
@@ -156,5 +170,6 @@ const productsSlice = createSlice({
   },
 });
 
-export const { setSearchTerm, setSelectedCategory, clearSelectedProduct } = productsSlice.actions;
+export const { setSearchTerm, setSelectedCategory, clearSelectedProduct } =
+  productsSlice.actions;
 export default productsSlice.reducer;

@@ -1,8 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../features/auth/authSlice';
-import productsReducer from '../features/products/productsSlice';
-import cartReducer from '../features/cart/cartSlice';
-import ordersReducer from '../features/orders/ordersSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "../features/auth/authSlice";
+import productsReducer from "../features/products/productsSlice";
+import cartReducer from "../features/cart/cartSlice";
+import ordersReducer from "../features/orders/ordersSlice";
+import adminProductReduer from "../features/admin/adminProductsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,11 +11,12 @@ export const store = configureStore({
     products: productsReducer,
     cart: cartReducer,
     orders: ordersReducer,
+    adminproducts: adminProductReduer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['persist/PERSIST'],
+        ignoredActions: ["persist/PERSIST"],
       },
     }),
 });

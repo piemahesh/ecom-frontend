@@ -1,44 +1,47 @@
-import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import type { AuthState, SignUpUser, User } from '../../types';
-import { API } from '../../services';
+import {
+  createSlice,
+  createAsyncThunk,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import type { AuthState, SignUpUser, User } from "../../types";
+import API from "../../services";
 
 // Mock API calls
 export const loginUser = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async ({ username, password }: { username: string; password: string }) => {
     try {
       const { data } = await API.post("users/login/", { username, password });
-      localStorage.setItem("user", JSON.stringify(data.user))
-      localStorage.setItem("access",data.access)
-      localStorage.setItem("refresh",data.refresh)
-      return data;  
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
+      return data;
     } catch (error) {
-      return error
+      return error;
     }
   }
 );
 
 export const signupUser = createAsyncThunk(
-  'auth/signup',
+  "auth/signup",
   async (data: SignUpUser) => {
     // Simulate API call
     try {
       const response = await API.post("users/register/", { ...data });
       console.log(response.data);
-      return response.data
+      return response.data;
     } catch (error) {
       return error;
     }
-
   }
 );
 
-export const checkAuth = createAsyncThunk('auth/checkAuth', async () => {
-  const userData = localStorage.getItem('user');
+export const checkAuth = createAsyncThunk("auth/checkAuth", async () => {
+  const userData = localStorage.getItem("user");
   if (userData) {
     return JSON.parse(userData) as User;
   }
-  throw new Error('No user found');
+  throw new Error("No user found");
 });
 
 const initialState: AuthState = {
@@ -48,13 +51,13 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-      localStorage.removeItem('user');
+      localStorage.removeItem("user");
     },
     clearError: (state) => {
       // Add error handling if needed
