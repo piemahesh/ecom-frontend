@@ -18,10 +18,7 @@ import { AdminProductForm, ProductFormValues } from "./AdminProductForm";
 import { AdminProductCard } from "../../features/admin/AdminProductCard";
 import { Card } from "../../components/ui/Card";
 import { Modal } from "./Modal";
-import {
-  DashboardStats,
-  fetchDashboardStats,
-} from "./services/dashboardService";
+import { fetchDashboardStatsThunk } from "./dashboardSlice";
 
 export const AdminDashboard: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -29,22 +26,18 @@ export const AdminDashboard: React.FC = () => {
   const { items: adminProducts, isLoading: loadingProducts } = useAppSelector(
     (state) => state.adminproducts
   );
+  const { stats: dashboardStats, loading } = useAppSelector(
+    (state) => state.adminOrders
+  );
   const { orders } = useAppSelector((state) => state.orders);
 
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState<ProductFormValues | null>(null);
-  const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(
-    null
-  );
 
   useEffect(() => {
     dispatch(fetchAdminProducts());
     dispatch(fetchOrders());
-    fetchDashboardStats()
-      .then(setDashboardStats)
-      .catch((error) =>
-        console.error("Failed to fetch dashboard stats:", error)
-      );
+    dispatch(fetchDashboardStatsThunk());
   }, [dispatch]);
 
   const handleSubmit = async (data: ProductFormValues) => {
@@ -66,6 +59,7 @@ export const AdminDashboard: React.FC = () => {
     setShowForm(false);
     setEditData(null);
     dispatch(fetchAdminProducts());
+    dispatch(fetchDashboardStatsThunk());
   };
 
   const handleEdit = (product: any) => {

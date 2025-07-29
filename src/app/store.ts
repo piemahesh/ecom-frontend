@@ -4,6 +4,7 @@ import productsReducer from "../features/products/productsSlice";
 import cartReducer from "../features/cart/cartSlice";
 import ordersReducer from "../features/orders/ordersSlice";
 import adminProductReduer from "../features/admin/adminProductsSlice";
+import adminOrderReducer from "../features/admin/dashboardSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     cart: cartReducer,
     orders: ordersReducer,
     adminproducts: adminProductReduer,
+    adminOrders: adminOrderReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
