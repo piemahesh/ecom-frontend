@@ -1,7 +1,8 @@
-// src/features/dashboard/dashboardSlice.ts
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { DashboardStats, fetchDashboardStats } from "./services/dashboardService";
-
+import { createSlice } from "@reduxjs/toolkit";
+import {
+  DashboardStats,
+  fetchDashboardStatsThunk,
+} from "../services/dashboardService";
 
 interface DashboardState {
   stats: DashboardStats | null;
@@ -14,19 +15,6 @@ const initialState: DashboardState = {
   loading: false,
   error: null,
 };
-
-// Single service call used inside Redux
-export const fetchDashboardStatsThunk = createAsyncThunk(
-  "dashboard/fetchStats",
-  async (_, thunkAPI) => {
-    try {
-      const data = await fetchDashboardStats();
-      return data;
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
 
 const dashboardSlice = createSlice({
   name: "dashboard",

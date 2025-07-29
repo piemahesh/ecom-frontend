@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Product } from "../../types";
-import { useAppDispatch } from "../../hooks/redux";
-import { deleteAdminProduct } from "./adminProductsSlice";
-import { ConfirmModal } from "./ConfirmationModal"
+import { Product } from "../../../types";
+import { useAppDispatch } from "../../../hooks/redux";
+import { deleteAdminProduct } from "../services/dashboardService";
+import { ConfirmModal } from "./ConfirmationModal";
+
 
 interface Props {
   product: Product;

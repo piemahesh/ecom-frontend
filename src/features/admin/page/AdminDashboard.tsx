@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { DollarSign, Package, ShoppingCart, TrendingUp } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { adminProduct } from "../redux/adminProductsSlice";
+import { fetchOrders, updateOrderStatus } from "../../orders/ordersSlice";
+import { AdminProductForm, ProductFormValues } from "../components/AdminProductForm";
+import { AdminProductCard } from "../components/AdminProductCard";
+import { Card } from "../../../components/ui/Card";
+import { Modal } from "../components/Modal";
 import {
-  fetchAdminProducts,
   addAdminProduct,
-  updateAdminProduct,
   deleteAdminProduct,
-  adminProduct,
-} from "../../features/admin/adminProductsSlice";
-import {
-  fetchOrders,
-  updateOrderStatus,
-} from "../../features/orders/ordersSlice";
-
-import { AdminProductForm, ProductFormValues } from "./AdminProductForm";
-import { AdminProductCard } from "../../features/admin/AdminProductCard";
-import { Card } from "../../components/ui/Card";
-import { Modal } from "./Modal";
-import { fetchDashboardStatsThunk } from "./dashboardSlice";
+  fetchAdminProducts,
+  fetchDashboardStatsThunk,
+  updateAdminProduct,
+} from "../services/dashboardService";
 
 export const AdminDashboard: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -45,8 +40,8 @@ export const AdminDashboard: React.FC = () => {
       ...data,
       id: editData?.id || "",
       category: {
-        id: Number(data.category), // convert string to number
-        name: "", // placeholder if name is not used in backend
+        id: Number(data.category),
+        name: "",
       },
     };
 
@@ -74,7 +69,7 @@ export const AdminDashboard: React.FC = () => {
           ? product.category.id
           : product.category
       ),
-      image: product.image as any, //
+      image: product.image as any,
     });
     setShowForm(true);
   };
@@ -82,13 +77,6 @@ export const AdminDashboard: React.FC = () => {
   const handleStatusUpdate = (orderId: string, newStatus: string) => {
     dispatch(updateOrderStatus({ id: orderId, status: newStatus as any }));
   };
-
-  // const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
-  // const totalOrders = orders.length;
-  // const pendingOrders = orders.filter(
-  //   (order) => order.status === "pending"
-  // ).length;
-  // const totalProducts = adminProducts.length;
 
   const stats = [
     {

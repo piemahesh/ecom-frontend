@@ -2,13 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import API from "../../services";
+import { fetchCategories } from "../services/dashboardService";
 
-// Add this to your existing API service
-export const fetchCategories = async () => {
-  const response = await API.get("products/categories/");
-  return response.data;
-};
 
 export type ProductFormValues = {
   id?: string;
