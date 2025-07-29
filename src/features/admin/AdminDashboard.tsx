@@ -18,6 +18,10 @@ import { AdminProductForm, ProductFormValues } from "./AdminProductForm";
 import { AdminProductCard } from "../../features/admin/AdminProductCard";
 import { Card } from "../../components/ui/Card";
 import { Modal } from "./Modal";
+import {
+  DashboardStats,
+  fetchDashboardStats,
+} from "./services/dashboardService";
 
 export const AdminDashboard: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -29,10 +33,18 @@ export const AdminDashboard: React.FC = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState<ProductFormValues | null>(null);
+  const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(
+    null
+  );
 
   useEffect(() => {
     dispatch(fetchAdminProducts());
     dispatch(fetchOrders());
+    fetchDashboardStats()
+      .then(setDashboardStats)
+      .catch((error) =>
+        console.error("Failed to fetch dashboard stats:", error)
+      );
   }, [dispatch]);
 
   const handleSubmit = async (data: ProductFormValues) => {
@@ -77,35 +89,43 @@ export const AdminDashboard: React.FC = () => {
     dispatch(updateOrderStatus({ id: orderId, status: newStatus as any }));
   };
 
-  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
-  const totalOrders = orders.length;
-  const pendingOrders = orders.filter(
-    (order) => order.status === "pending"
-  ).length;
-  const totalProducts = adminProducts.length;
+  // const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+  // const totalOrders = orders.length;
+  // const pendingOrders = orders.filter(
+  //   (order) => order.status === "pending"
+  // ).length;
+  // const totalProducts = adminProducts.length;
 
   const stats = [
     {
       name: "Total Revenue",
-      value: `$${totalRevenue.toFixed(2)}`,
+      value: dashboardStats
+        ? `$${dashboardStats.total_revenue.toFixed(2)}`
+        : "Loading...",
       icon: DollarSign,
       color: "bg-green-500",
     },
     {
       name: "Total Orders",
-      value: totalOrders.toString(),
+      value: dashboardStats
+        ? dashboardStats.total_orders.toString()
+        : "Loading...",
       icon: ShoppingCart,
       color: "bg-blue-500",
     },
     {
       name: "Total Products",
-      value: totalProducts.toString(),
+      value: dashboardStats
+        ? dashboardStats.total_products.toString()
+        : "Loading...",
       icon: Package,
       color: "bg-purple-500",
     },
     {
       name: "Pending Orders",
-      value: pendingOrders.toString(),
+      value: dashboardStats
+        ? dashboardStats.pending_orders.toString()
+        : "Loading...",
       icon: TrendingUp,
       color: "bg-orange-500",
     },
