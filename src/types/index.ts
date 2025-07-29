@@ -2,8 +2,8 @@ export interface User {
   id: string;
   email: string;
   username: string;
-  is_admin:boolean;
-  is_customer:boolean;
+  is_admin: boolean;
+  is_customer: boolean;
 }
 
 export interface SignUpUser {
@@ -11,7 +11,7 @@ export interface SignUpUser {
   email: string;
   password: string;
   is_admin?: boolean;
-  is_customer?: boolean
+  is_customer?: boolean;
 }
 
 export interface Product {
@@ -22,7 +22,7 @@ export interface Product {
   image: string;
   category: {
     id: number;
-    name: string
+    name?: string;
   };
   stock: number;
   rating: number;
@@ -40,7 +40,7 @@ export interface Order {
   userId: string;
   items: CartItem[];
   total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   shippingAddress: ShippingAddress;
   paymentMethod: string;
   createdAt: string;
@@ -81,4 +81,4 @@ export interface OrdersState {
   isLoading: boolean;
 }
 
-export type Theme = 'light' | 'dark';
+export type Theme = "light" | "dark";

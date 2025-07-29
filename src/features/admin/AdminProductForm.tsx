@@ -16,8 +16,8 @@ export type ProductFormValues = {
   description: string;
   price: number;
   stock: number;
-  category: string;
-  image?: FileList;
+  category: { id: number; name: string } | number | string;
+  image?: FileList | string;
 };
 
 type Category = {
@@ -54,13 +54,21 @@ export const AdminProductForm: React.FC<Props> = ({
     reset,
   } = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      title: "",
-      description: "",
-      price: 0,
-      stock: 0,
-      category: "",
-    },
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          category:
+            typeof initialData.category === "object"
+              ? String(initialData.category.id)
+              : String(initialData.category),
+        }
+      : {
+          title: "",
+          description: "",
+          price: 0,
+          stock: 0,
+          category: "",
+        },
   });
 
   useEffect(() => {
@@ -71,7 +79,13 @@ export const AdminProductForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (initialData) {
-      reset(initialData);
+      reset({
+        ...initialData,
+        category:
+          typeof initialData.category === "object"
+            ? String(initialData.category.id)
+            : String(initialData.category),
+      });
     }
   }, [initialData, reset]);
 
@@ -133,11 +147,18 @@ export const AdminProductForm: React.FC<Props> = ({
         </label>
         <select
           {...register("category")}
+          defaultValue={""}
           className="mt-1 block w-full border rounded p-2"
         >
-          <option value="">Select category</option>
+          <option value="" disabled selected>
+            Select category
+          </option>
           {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
+            <option
+              key={cat.id}
+              value={String(cat.id)}
+              selected={cat.name == initialData?.category?.name || false}
+            >
               {cat.name}
             </option>
           ))}
@@ -151,10 +172,25 @@ export const AdminProductForm: React.FC<Props> = ({
         <label className="block text-sm font-medium text-gray-700">Image</label>
         <input
           type="file"
+          accept="image/*"
           {...register("image")}
           className="mt-1 block w-full border rounded p-2"
         />
+        {errors.image && (
+          <p className="text-red-500 text-sm">{errors.image.message}</p>
+        )}
       </div>
+
+      {initialData?.image && typeof initialData.image === "string" && (
+        <div className="mt-2">
+          <p className="text-xs text-gray-500">Image:</p>
+          <img
+            src={initialData.image}
+            alt="Preview"
+            className="w-20 h-20 object-cover rounded mt-1"
+          />
+        </div>
+      )}
 
       <div className="flex justify-end space-x-2">
         <button

@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import API from "../../services";
 
-type Product = {
+export type adminProduct = {
   id: string;
   title: string;
   description: string;
@@ -13,7 +13,7 @@ type Product = {
 };
 
 interface AdminProductsState {
-  items: Product[];
+  items: adminProduct[];
   isLoading: boolean;
   error: string | null;
 }
@@ -29,7 +29,7 @@ export const fetchAdminProducts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await API.get("products/my-products/");
-      return response.data as Product[];
+      return response.data as adminProduct[];
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Failed to fetch");
     }
@@ -50,7 +50,7 @@ export const deleteAdminProduct = createAsyncThunk(
 
 export const updateAdminProduct = createAsyncThunk(
   "adminProducts/updateAdminProduct",
-  async (product: Product, { rejectWithValue }) => {
+  async (product: adminProduct, { rejectWithValue }) => {
     try {
       const formData = new FormData();
       formData.append("title", product.title);
@@ -75,7 +75,7 @@ export const updateAdminProduct = createAsyncThunk(
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      return response.data as Product;
+      return response.data as adminProduct;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Update failed");
     }
@@ -84,7 +84,7 @@ export const updateAdminProduct = createAsyncThunk(
 
 export const addAdminProduct = createAsyncThunk(
   "adminProducts/addAdminProduct",
-  async (product: Partial<Product>, { rejectWithValue }) => {
+  async (product: Partial<adminProduct>, { rejectWithValue }) => {
     try {
       const formData = new FormData();
       formData.append("title", product.title || "");
@@ -116,7 +116,7 @@ export const addAdminProduct = createAsyncThunk(
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      return response.data as Product;
+      return response.data as adminProduct;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Add failed");
     }
@@ -135,7 +135,7 @@ const adminProductsSlice = createSlice({
       })
       .addCase(
         fetchAdminProducts.fulfilled,
-        (state, action: PayloadAction<Product[]>) => {
+        (state, action: PayloadAction<adminProduct[]>) => {
           state.isLoading = false;
           state.items = action.payload;
         }
@@ -155,14 +155,14 @@ const adminProductsSlice = createSlice({
       )
       .addCase(
         updateAdminProduct.fulfilled,
-        (state, action: PayloadAction<Product>) => {
+        (state, action: PayloadAction<adminProduct>) => {
           const idx = state.items.findIndex((p) => p.id === action.payload.id);
           if (idx !== -1) state.items[idx] = action.payload;
         }
       )
       .addCase(
         addAdminProduct.fulfilled,
-        (state, action: PayloadAction<Product>) => {
+        (state, action: PayloadAction<adminProduct>) => {
           state.items.push(action.payload);
         }
       );
